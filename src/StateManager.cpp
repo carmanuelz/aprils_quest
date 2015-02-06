@@ -229,8 +229,6 @@ namespace Urho3D
 	{
 		bool bResult = true;
 
-
-
 		if (bResult)
 			begun_ = true;
 		return bResult;

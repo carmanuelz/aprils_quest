@@ -71,10 +71,6 @@ bool MenuState::Begin()
 	SharedPtr<ResourceCache> cache(GetSubsystem<ResourceCache>());
 	SharedPtr<XMLFile> style(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
 
-	// Create Background sprite and add to the UI layout
-
-	UI* ui = GetSubsystem<UI>();
-
 	// Set the loaded style as default style
 	uiRoot_->SetDefaultStyle(style);
 
@@ -86,8 +82,6 @@ bool MenuState::Begin()
 
 	// Subscribe key down event
 	SubscribeToEvent(E_KEYDOWN, HANDLER(MenuState, HandleKeyDown));
-
-
 
 
 	// Call base class implementation
@@ -169,7 +163,6 @@ void MenuState::Quit()
 		cancelButton->SetFocus(true);
 		SubscribeToEvent(messageBox, E_MESSAGEACK, HANDLER(MenuState, HandleQuitMessageAck));
 	}
-
 	messageBox->AddRef();
 }
 
@@ -188,7 +181,6 @@ void MenuState::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 	using namespace KeyDown;
 
 	int key = eventData[P_KEY].GetInt();
-
 	// Close console (if open) or exit when ESC is pressed
 	if (key == KEY_ESC)
 	{

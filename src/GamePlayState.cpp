@@ -17,6 +17,22 @@
 #include "Sprite.h"
 #include "Node.h"
 #include "UI.h"
+#include "Engine.h"
+#include "iostream"
+#include "RigidBody2D.h"
+#include "PhysicsWorld2D.h"
+#include "DebugRenderer.h"
+#include "CollisionCircle2D.h"
+#include "File.h"
+#include "FileSystem.h"
+#include "PhysicsEvents2D.h"
+#include "InputEvents.h"
+#include "BulletEntity.h"
+#include "AStarFinder.h"
+#include "EnemyEntity.h"
+#include "Color.h"
+#include "JSONFile.h"
+#include "JSONValue.h"
 
 #include "GamePlayState.h"
 
@@ -27,6 +43,10 @@ static const StringHash VAR_ROTATESPEED("RotateSpeed");
 
 GamePlayState::GamePlayState(Context* context) : State(context)
 {
+    PlayerEntity::RegisterObject(context);
+	BulletEntity::RegisterObject(context);
+	EnemyEntity::RegisterObject(context);
+	AStarFinder::RegisterObject(context);
 }
 
 GamePlayState::~GamePlayState()
@@ -45,6 +65,8 @@ bool GamePlayState::Begin()
 	SubscribeToEvents();
 
 	GetSubsystem<Input>()->SetMouseVisible(true);
+
+	return State::Begin();
 }
 
 bool GamePlayState::Initialize()
@@ -56,11 +78,14 @@ void GamePlayState::CreateScene()
 {
     scene_ = new Scene(context_);
     scene_->CreateComponent<Octree>();
+    scene_->CreateComponent<DebugRenderer>();
+    PhysicsWorld2D* physicsWorld = scene_->CreateComponent<PhysicsWorld2D>();
+    physicsWorld->SetGravity(Vector2::ZERO);
 
     // Create camera node
     cameraNode_ = scene_->CreateChild("Camera");
     // Set camera's position
-    cameraNode_->SetPosition(Vector3(0.0f, 0.0f, -10.0f));
+    cameraNode_->SetPosition(Vector3(7.5f, 7.5, -10.0f));
 
     Camera* camera = cameraNode_->CreateComponent<Camera>();
     camera->SetOrthographic(true);
@@ -69,47 +94,60 @@ void GamePlayState::CreateScene()
     camera->SetOrthoSize((float)graphics->GetHeight() * PIXEL_SIZE);
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    // Get sprite
-    Sprite2D* sprite = cache->GetResource<Sprite2D>("Urho2D/Aster.png");
-    if (!sprite)
+
+    nodeWall = scene_->CreateChild("NodoWall");
+
+    XMLFile* nodoXMLFile = cache->GetResource<XMLFile>("Scenes/nodo_map.xml");
+    XMLElement nodoXML(nodoXMLFile->GetRoot());
+    nodeWall->LoadXML(nodoXML);
+
+    JSONFile* data = new JSONFile(context_);
+    File file(context_, "Data/Scenes/MapNode.json");
+    data->Load(file);
+
+    JSONValue rootjson = data->GetRoot();
+
+    JSONValue blocks = rootjson.GetChild("blocks");
+
+    Vector2 position = rootjson.GetVector2("playerpost");
+
+    AStarFinder* finder = scene_->CreateComponent<AStarFinder>();
+    finder->LoadMap(blocks);
+
+    // Create 2D physics world component
+
+    targetNode_ = scene_->CreateChild("Target");
+    Sprite2D* targetsprite = cache->GetResource<Sprite2D>("Urho2D/target.png");
+    if (!targetsprite)
         return;
+
+    StaticSprite2D* targetstaticsprite = targetNode_->CreateComponent<StaticSprite2D>();
+    targetstaticsprite->SetSprite(targetsprite);
+    targetstaticsprite->SetLayer(65000);
 
     float halfWidth = graphics->GetWidth() * 0.5f * PIXEL_SIZE;
     float halfHeight = graphics->GetHeight() * 0.5f * PIXEL_SIZE;
 
-    for (unsigned i = 0; i < NUM_SPRITES; ++i)
-    {
-        SharedPtr<Node> spriteNode(scene_->CreateChild("StaticSprite2D"));
-        spriteNode->SetPosition(Vector3(Random(-halfWidth, halfWidth), Random(-halfHeight, halfHeight), 0.0f));
-
-        StaticSprite2D* staticSprite = spriteNode->CreateComponent<StaticSprite2D>();
-        // Set random color
-        staticSprite->SetColor(Color(Random(1.0f), Random(1.0f), Random(1.0f), 1.0f));
-        // Set blend mode
-        staticSprite->SetBlendMode(BLEND_ALPHA);
-        // Set sprite
-        staticSprite->SetSprite(sprite);
-
-        // Set move speed
-        spriteNode->SetVar(VAR_MOVESPEED, Vector3(Random(-2.0f, 2.0f), Random(-2.0f, 2.0f), 0.0f));
-        // Set rotate speed
-        spriteNode->SetVar(VAR_ROTATESPEED, Random(-90.0f, 90.0f));
-
-        // Add to sprite node vector
-        spriteNodes_.Push(spriteNode);
-    }
-
     // Get animation set
-    AnimationSet2D* animationSet = cache->GetResource<AnimationSet2D>("Urho2D/GoldIcon.scml");
-    if (!animationSet)
-        return;
+    SharedPtr<Node> spriteNode(scene_->CreateChild("Player"));
+    spriteNode->SetPosition2D(position);
+    player_ = spriteNode->CreateComponent<PlayerEntity>();
 
-    SharedPtr<Node> spriteNode(scene_->CreateChild("AnimatedSprite2D"));
-    spriteNode->SetPosition(Vector3(0.0f, 0.0f, -1.0f));
+    SharedPtr<Node> enemynode(scene_->CreateChild("EnemyNode"));
+    enemynode->SetPosition(Vector3(7.75f, 10.25f, 0.0f));
+    enemy_ = enemynode->CreateComponent<EnemyEntity>();
 
-    AnimatedSprite2D* animatedSprite = spriteNode->CreateComponent<AnimatedSprite2D>();
-    // Set animation
-    animatedSprite->SetAnimation(animationSet, "idle");
+    SharedPtr<Node> enemynode2(scene_->CreateChild("EnemyNode"));
+    enemynode2->SetPosition(Vector3(7.5f, 5.0f, 0.0f));
+    EnemyEntity* enemy2_ = enemynode2->CreateComponent<EnemyEntity>();
+
+    SharedPtr<Node> enemynode3(scene_->CreateChild("EnemyNode"));
+    enemynode3->SetPosition(Vector3(10.0f, 7.5f, 0.0f));
+    EnemyEntity* enemy3_ = enemynode3->CreateComponent<EnemyEntity>();
+
+    SharedPtr<Node> enemynode4(scene_->CreateChild("EnemyNode"));
+    enemynode4->SetPosition(Vector3(5.0f, 7.5f, 0.0f));
+    EnemyEntity* enemy4_ = enemynode4->CreateComponent<EnemyEntity>();
 }
 
 void GamePlayState::CreateUI()
@@ -132,6 +170,7 @@ void GamePlayState::SetupViewport()
 {
     Renderer* renderer = GetSubsystem<Renderer>();
 
+    renderer->SetNumViewports(1);
     // Set up a viewport to the Renderer subsystem so that the 3D scene can be seen
     SharedPtr<Viewport> viewport(new Viewport(context_, scene_, cameraNode_->GetComponent<Camera>()));
     renderer->SetViewport(0, viewport);
@@ -141,6 +180,57 @@ void GamePlayState::SubscribeToEvents()
 {
     // Subscribe HandleUpdate() function for processing update events
     SubscribeToEvent(E_UPDATE, HANDLER(GamePlayState, HandleUpdate));
+    SubscribeToEvent(E_PHYSICSBEGINCONTACT2D, HANDLER(GamePlayState, HandleBeginContact));
+    SubscribeToEvent(E_MOUSEBUTTONDOWN, HANDLER(GamePlayState, HandleMouseButtonDownPressed));
+    SubscribeToEvent(E_JOYSTICKBUTTONDOWN, HANDLER(GamePlayState, HandleJoystickButtonDownPressed));
+    SubscribeToEvent(E_JOYSTICKAXISMOVE, HANDLER(GamePlayState, HandleJoystickAxisMove));
+}
+
+void GamePlayState::HandleBeginContact(StringHash eventType, VariantMap& eventData)
+{
+    using namespace PhysicsBeginContact2D;
+    RigidBody2D* BodyA = static_cast<RigidBody2D*>(eventData[P_BODYA].GetPtr());
+    RigidBody2D* BodyB = static_cast<RigidBody2D*>(eventData[P_BODYB].GetPtr());
+    Node* nodeA = BodyA->GetNode();
+    Node* nodeB = BodyB->GetNode();
+    if(nodeA->GetName() == "bullet")
+        RemoveBulletList.Push(nodeA);
+    if(nodeB->GetName() == "bullet")
+        RemoveBulletList.Push(nodeB);
+
+}
+
+void GamePlayState::HandleJoystickAxisMove(StringHash eventType, VariantMap& eventData)
+{
+    using namespace JoystickAxisMove;
+
+    int button = eventData[P_AXIS].GetInt();
+    float position = eventData[P_POSITION].GetFloat();
+    std::cout<<button<<" - "<<position<<std::endl;
+}
+
+void GamePlayState::HandleJoystickButtonDownPressed(StringHash eventType, VariantMap& eventData)
+{
+    using namespace JoystickButtonDown;
+
+    int button = eventData[P_BUTTON].GetInt();
+    std::cout<<button<<std::endl;
+}
+
+void GamePlayState::HandleMouseButtonDownPressed(StringHash eventType, VariantMap& eventData)
+{
+	using namespace MouseButtonDown;
+
+	int button = eventData[P_BUTTON].GetInt();
+
+
+		if (MOUSEB_LEFT == button)
+		{
+            player_->Shoot();
+		}
+
+		if (MOUSEB_RIGHT == button)
+            player_->ChangeTarget();
 }
 
 void GamePlayState::HandleUpdate(StringHash eventType, VariantMap& eventData)
@@ -151,36 +241,73 @@ void GamePlayState::HandleUpdate(StringHash eventType, VariantMap& eventData)
     float timeStep = eventData[P_TIMESTEP].GetFloat();
 
     // Move the camera, scale movement with time step
-    MoveCamera(timeStep);
+    //MoveCamera(timeStep);
 
     Graphics* graphics = GetSubsystem<Graphics>();
+    Input* input = GetSubsystem<Input>();
+
+    if (GetSubsystem<UI>()->GetFocusElement())
+        return;
+
+    /*if (input->GetMouseButtonDown(1))
+    {
+        std::cout << "Button 1 Down" << std::endl;
+    }*/
+
+    Vector2 posplayer(player_->GetNode()->GetPosition2D());
+
     float halfWidth = (float)graphics->GetWidth() * 0.5f * PIXEL_SIZE;
     float halfHeight = (float)graphics->GetHeight() * 0.5f * PIXEL_SIZE;
 
-    for (unsigned i = 0; i < spriteNodes_.Size(); ++i)
+    if (player_)
     {
-        SharedPtr<Node> node = spriteNodes_[i];
+        // Clear previous controls
+        player_->controls_.Set(CTRL_DOWN | CTRL_LEFT | CTRL_RIGHT | CTRL_UP | LOOK_LEFT, false);
+        player_->controls_.Set(CTRL_UP, input->GetKeyDown('W'));
+        //player_->controls_.Set(CTRL_UP, input-> GetJoystickByIndex(1)->GetButtonDown(11) );
+        player_->controls_.Set(CTRL_DOWN, input->GetKeyDown('S'));
+        player_->controls_.Set(CTRL_LEFT, input->GetKeyDown('A'));
+        player_->controls_.Set(CTRL_RIGHT, input->GetKeyDown('D'));
+        player_->controls_.Set(LOOK_LEFT, (posplayer.x_ > GetMousePositionXY().x_));
+    }
 
-        Vector3 position = node->GetPosition();
-        Vector3 moveSpeed = node->GetVar(VAR_MOVESPEED).GetVector3();
-        Vector3 newPosition = position + moveSpeed * timeStep;
-        if (newPosition.x_ < -halfWidth || newPosition.x_ > halfWidth)
-        {
-            newPosition.x_ = position.x_;
-            moveSpeed.x_ = -moveSpeed.x_;
-            node->SetVar(VAR_MOVESPEED, moveSpeed);
-        }
-        if (newPosition.y_ < -halfHeight || newPosition.y_ > halfHeight)
-        {
-            newPosition.y_ = position.y_;
-            moveSpeed.y_ = -moveSpeed.y_;
-            node->SetVar(VAR_MOVESPEED, moveSpeed);
-        }
+    if (input->GetKeyDown('O'))
+    {
+        stateManager_->PopStack();
+		stateManager_->PushToStack("MainMenuStage");
+    }
 
-        node->SetPosition(newPosition);
+    if (input->GetKeyPress(KEY_F7))
+    {
+        ResourceCache* cache = GetSubsystem<ResourceCache>();
+        XMLFile* nodoXMLFile = cache->GetResource<XMLFile>("Scenes/nodo_map.xml");
+        XMLElement nodoXML(nodoXMLFile->GetRoot());
+        nodeWall->LoadXML(nodoXML);
+        std::cout<<"Nodo cargado"<<std::endl;
+    }
 
-        float rotateSpeed = node->GetVar(VAR_ROTATESPEED).GetFloat();
-        node->Roll(rotateSpeed * timeStep);
+    scene_->GetComponent<AStarFinder>()->drawdebug();
+    enemy_->CastTarget(player_->GetNode(),true);
+
+    PhysicsWorld2D* physicsWorld = scene_->GetComponent<PhysicsWorld2D>();
+    physicsWorld->DrawDebugGeometry();
+
+    targetNode_->SetPosition2D(GetMousePositionXY());
+
+    if(player_->CurrentTarget)
+    {
+        Vector2 campos(posplayer*0.5 + player_->CurrentTarget->GetPosition2D()*0.5f);
+        cameraNode_->Translate2D((campos - cameraNode_->GetPosition2D())*0.05);
+    }
+    else
+        cameraNode_->Translate2D((posplayer - cameraNode_->GetPosition2D())*0.1);
+
+
+    while(!RemoveBulletList.Empty())
+    {
+        Node* current = RemoveBulletList.Back();
+        current->Remove();
+        RemoveBulletList.Pop();
     }
 }
 
@@ -194,6 +321,16 @@ void GamePlayState::End()
 	}
     UnsubscribeFromAllEvents();
 	State::End();
+}
+
+Vector2 GamePlayState::GetMousePositionXY()
+{
+    Input* input = GetSubsystem<Input>();
+    Graphics* graphics = GetSubsystem<Graphics>();
+    Vector3 screenPoint = Vector3((float)input->GetMousePosition().x_ / graphics->GetWidth(), (float)input->GetMousePosition().y_ / graphics->GetHeight(), 0.0f);
+
+    Vector3 worldPoint = cameraNode_->GetComponent<Camera>()->ScreenToWorldPoint(screenPoint);
+    return Vector2(worldPoint.x_, worldPoint.y_);
 }
 
 void GamePlayState::MoveCamera(float timeStep)

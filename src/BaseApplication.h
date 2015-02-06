@@ -15,7 +15,7 @@ using namespace Urho3D;
 class BaseApplication : public Application
 {
     // Enable type information.
-    OBJECT(Sample);
+    OBJECT(BaseApplication);
 
 public:
     /// Construct.
@@ -25,6 +25,8 @@ public:
     virtual void Setup();
     /// Setup after engine initialization. Creates the logo, console & debug HUD.
     virtual void Start();
+
+    virtual void Stop();
 
 protected:
     /// Logo sprite.

@@ -40,5 +40,5 @@ void AprilsQuest::Start()
 
 	splashState->SetNextState("MainMenu");
 
-	stateManager_->PushToStack("SplashState");
+	stateManager_->PushToStack("GamePlayState");
 }

@@ -1,0 +1,14 @@
+<TextureAtlas imagePath="April.png">
+	<SubTexture name="Idle_01" x="50" y="62" width="48" height="60"/>
+	<SubTexture name="Idle_02" x="100" y="62" width="48" height="60"/>
+	<SubTexture name="Idle_03" x="50" y="62" width="48" height="60"/>
+	<SubTexture name="Idle_04" x="100" y="0" width="48" height="60"/>
+	<SubTexture name="Run_01" x="50" y="186" width="48" height="60"/>
+	<SubTexture name="Run_02" x="50" y="124" width="48" height="60"/>
+	<SubTexture name="Run_03" x="100" y="124" width="48" height="60"/>
+	<SubTexture name="Run_04" x="50" y="0" width="48" height="60"/>
+	<SubTexture name="Run_05" x="0" y="186" width="48" height="60"/>
+	<SubTexture name="Run_06" x="0" y="124" width="48" height="60"/>
+	<SubTexture name="Run_07" x="0" y="62" width="48" height="60"/>
+	<SubTexture name="Run_08" x="0" y="0" width="48" height="60"/>
+</TextureAtlas>
