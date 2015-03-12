@@ -60,6 +60,7 @@ public:
 private:
 
     void AutoTarget();
-
     Vector<Node*> TargetList;
+    Node* weaponnode;
+    void UpdateBehaviour();
 };

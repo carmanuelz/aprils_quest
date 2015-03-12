@@ -24,6 +24,7 @@
 
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
+#define M_PI 3.14159265358979323846
 
 PlayerEntity::PlayerEntity(Context* context) : LogicComponent(context)
 {
@@ -42,14 +43,14 @@ void PlayerEntity::RegisterObject(Context* context)
 void PlayerEntity::Start()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    AnimationSet2D* animationSet = cache->GetResource<AnimationSet2D>("Urho2D/April.scml");
+    AnimationSet2D* animationSet = cache->GetResource<AnimationSet2D>("Urho2D/april.scml");
     if (!animationSet)
         return;
 
     AnimatedSprite2D* animatedSprite = node_->CreateComponent<AnimatedSprite2D>();
-    animatedSprite->SetLayer(2);
+    animatedSprite->SetLayer(100);
     // Set animation
-    animatedSprite->SetAnimation(animationSet, "Idle");
+    animatedSprite->SetAnimation(animationSet, "idle");
     animatedSprite->SetSpeed(1.5f);
 
     RigidBody2D* bodysprite = node_->CreateComponent<RigidBody2D>();
@@ -67,6 +68,14 @@ void PlayerEntity::Start()
     circle->SetRestitution(0.0f);
 
     circle->SetCategoryBits(16384);
+
+    weaponnode = node_->CreateChild("weapon");
+    AnimationSet2D* weaponanimset = cache->GetResource<AnimationSet2D>("Urho2D/gun.scml");
+    if (!weaponanimset)
+        return;
+    AnimatedSprite2D* gunanim = weaponnode->CreateComponent<AnimatedSprite2D>();
+    gunanim->SetAnimation(weaponanimset, "shoot");
+    gunanim->SetLayer(7);
 }
 
 void PlayerEntity::DelayedStart()
@@ -83,8 +92,9 @@ void PlayerEntity::Update(float timeStep)
     RigidBody2D* body = GetComponent<RigidBody2D>();
     AnimatedSprite2D* animatesprite = GetComponent<AnimatedSprite2D>();
 
-    Vector2 moveDir = Vector2::ZERO;
+    UpdateBehaviour();
 
+    Vector2 moveDir = Vector2::ZERO;
     body->SetLinearVelocity(Vector2::ZERO);
 
     if (controls_.IsDown(CTRL_UP))
@@ -109,13 +119,13 @@ void PlayerEntity::Update(float timeStep)
 
     if(!moveDir.Equals(Vector2::ZERO))
     {
-        if(animatesprite->GetAnimation()!= "Run")
-            animatesprite->SetAnimation("Run", animatesprite->GetLoopMode());
+        if(animatesprite->GetAnimation()!= "run")
+            animatesprite->SetAnimation("run", animatesprite->GetLoopMode());
     }
     else
     {
-        if(animatesprite->GetAnimation()!= "Idle")
-            animatesprite->SetAnimation("Idle", animatesprite->GetLoopMode());
+        if(animatesprite->GetAnimation()!= "idle")
+            animatesprite->SetAnimation("idle", animatesprite->GetLoopMode());
     }
     body->SetLinearVelocity(moveDir*MOVE_FORCE);
 
@@ -124,12 +134,10 @@ void PlayerEntity::Update(float timeStep)
 
 void PlayerEntity::Shoot()
 {
-    if(!CurrentTarget)
-        return;
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Input* input = GetSubsystem<Input>();
 
-    Vector2 worldPoint = CurrentTarget->GetPosition2D();
+    Vector2 worldPoint = GetScene()->GetChild("Target",false)->GetPosition2D();
     Vector2 dir = Vector2(worldPoint.x_,worldPoint.y_);
     dir = (dir - node_->GetPosition2D());
     dir.Normalize();
@@ -259,5 +267,46 @@ void PlayerEntity::ChangeTarget()
             TargetList[0]->GetComponent<EnemyEntity>()->SetObjetive();
             CurrentTarget = TargetList[0];
         }
+    }
+}
+
+
+void PlayerEntity::UpdateBehaviour()
+{
+    AnimatedSprite2D* weaponanim = weaponnode->GetComponent<AnimatedSprite2D>();
+    Vector2 dirtarget = GetScene()->GetChild("Target",false)->GetPosition2D()-node_->GetPosition2D();
+
+    float angle = fmod(atan2(dirtarget.y_, dirtarget.x_)*180/M_PI,360);
+
+    angle = angle - weaponnode->GetRotation2D();
+    float currentangle = angle + weaponnode->GetRotation2D();
+
+    if(currentangle < 0)
+        currentangle = 360 + currentangle;
+
+    if(currentangle < 360 && currentangle >= 270)
+    {
+        weaponanim->SetFlipY(false);
+        //weaponnode->SetPosition2D(21/100,30/100);
+        weaponnode->RotateAround2D(Vector2(0,0),angle);
+    }
+    if(currentangle < 270 && currentangle >= 180)
+    {
+        weaponanim->SetFlipY(true);
+        //weaponnode->SetPosition2D(27/100,30/100);
+        weaponnode->RotateAround2D(Vector2(36/100,0),angle);
+    }
+    if(currentangle < 180 && currentangle >= 90)
+    {
+        weaponanim->SetFlipY(true);
+        //weaponnode->SetPosition2D(18/100,40/100);
+        weaponnode->RotateAround2D(Vector2(27/100,8/100),angle);
+    }
+
+    if(currentangle < 90 && currentangle >= 0)
+    {
+        weaponanim->SetFlipY(false);
+        //weaponnode->SetPosition2D(28/100,40/100);
+        weaponnode->RotateAround2D(Vector2(8/100,8/100),angle);
     }
 }

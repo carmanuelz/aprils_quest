@@ -45,15 +45,14 @@ void EnemyEntity::Start()
     if (!object)
         return;
 
-    AnimationSet2D* animationSet = cache->GetResource<AnimationSet2D>("Urho2D/April.scml");
+    AnimationSet2D* animationSet = cache->GetResource<AnimationSet2D>("Urho2D/soldado.scml");
     if (!animationSet)
         return;
 
     AnimatedSprite2D* animatedSprite = node_->CreateComponent<AnimatedSprite2D>();
     animatedSprite->SetLayer(2);
-	animatedSprite->SetColor(Color::MAGENTA);
     // Set animation
-    animatedSprite->SetAnimation(animationSet, "Idle");
+    animatedSprite->SetAnimation(animationSet, "idle");
     animatedSprite->SetSpeed(1.5f);
 
     objectsprite = node_->CreateComponent<StaticSprite2D>();
@@ -260,7 +259,10 @@ void EnemyEntity::UpdateFind()
         {*/
             if(findflag && !isBusy)
             {
-                    findto(target_->GetPosition2D());
+                AnimatedSprite2D* animatesprite = GetComponent<AnimatedSprite2D>();
+                if(animatesprite->GetAnimation()!= "run")
+                    animatesprite->SetAnimation("run", animatesprite->GetLoopMode());
+                findto(target_->GetPosition2D());
                     //std::cout<<vel.x_<<" _ "<<vel.y_<<std::endl;
 
             }
@@ -284,8 +286,8 @@ void EnemyEntity::UpdateFind()
                 vel = Vector2::ZERO;
                 gotoflag = false;
                 AnimatedSprite2D* animatesprite = GetComponent<AnimatedSprite2D>();
-                if(animatesprite->GetAnimation()!= "Idle")
-                    animatesprite->SetAnimation("Idle", animatesprite->GetLoopMode());
+                if(animatesprite->GetAnimation()!= "idle")
+                    animatesprite->SetAnimation("idle", animatesprite->GetLoopMode());
                 //currenttimefind = 0;
             }
             else
@@ -297,8 +299,8 @@ void EnemyEntity::UpdateFind()
 void EnemyEntity::GotoPosition(Vector2 to)
 {
     AnimatedSprite2D* animatesprite = GetComponent<AnimatedSprite2D>();
-    if(animatesprite->GetAnimation()!= "Run")
-        animatesprite->SetAnimation("Run", animatesprite->GetLoopMode());
+    if(animatesprite->GetAnimation()!= "run")
+        animatesprite->SetAnimation("run", animatesprite->GetLoopMode());
     gotoflag = true;
     findposition = to;
 }
@@ -385,6 +387,9 @@ void EnemyEntity::CastTarget(Node* target, bool isdebug)
         {
             if(!findflag)
             {
+                AnimatedSprite2D* animatesprite = GetComponent<AnimatedSprite2D>();
+                if(animatesprite->GetAnimation()!= "idle")
+                    animatesprite->SetAnimation("idle", animatesprite->GetLoopMode());
                 Shoot();
             }
         }

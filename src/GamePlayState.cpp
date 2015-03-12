@@ -33,6 +33,10 @@
 #include "Color.h"
 #include "JSONFile.h"
 #include "JSONValue.h"
+#include "LuaFile.h"
+#include "LuaFunction.h"
+#include "LuaScript.h"
+#include "LuaScriptInstance.h"
 
 #include "GamePlayState.h"
 
@@ -47,6 +51,7 @@ GamePlayState::GamePlayState(Context* context) : State(context)
 	BulletEntity::RegisterObject(context);
 	EnemyEntity::RegisterObject(context);
 	AStarFinder::RegisterObject(context);
+	context_->RegisterSubsystem(new LuaScript(context_));
 }
 
 GamePlayState::~GamePlayState()
@@ -132,6 +137,12 @@ void GamePlayState::CreateScene()
     SharedPtr<Node> spriteNode(scene_->CreateChild("Player"));
     spriteNode->SetPosition2D(position);
     player_ = spriteNode->CreateComponent<PlayerEntity>();
+
+    LuaFile* scriptFile = cache->GetResource<LuaFile>("Scripts/player.lua");
+    if (!scriptFile)
+        return;
+    LuaScriptInstance* instance = spriteNode->CreateComponent<LuaScriptInstance>();
+    instance->CreateObject(scriptFile, "Rotator");
 
     SharedPtr<Node> enemynode(scene_->CreateChild("EnemyNode"));
     enemynode->SetPosition(Vector3(7.75f, 10.25f, 0.0f));
@@ -294,14 +305,8 @@ void GamePlayState::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
     targetNode_->SetPosition2D(GetMousePositionXY());
 
-    if(player_->CurrentTarget)
-    {
-        Vector2 campos(posplayer*0.5 + player_->CurrentTarget->GetPosition2D()*0.5f);
-        cameraNode_->Translate2D((campos - cameraNode_->GetPosition2D())*0.05);
-    }
-    else
-        cameraNode_->Translate2D((posplayer - cameraNode_->GetPosition2D())*0.1);
-
+    Vector2 campos(posplayer*0.75f + targetNode_->GetPosition2D()*0.25f);
+    cameraNode_->Translate2D((campos - cameraNode_->GetPosition2D())*0.05);
 
     while(!RemoveBulletList.Empty())
     {
