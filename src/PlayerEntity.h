@@ -1,18 +1,18 @@
 
 #pragma once
-#include "LogicComponent.h"
-#include "Controls.h"
-#include "Node.h"
-#include "Vector.h"
+#include "Urho3D/Scene/LogicComponent.h"
+#include "Urho3D/Input/Controls.h"
+#include "Urho3D/Scene/Node.h"
+#include "Urho3D/Container/Vector.h"
 
 // All Urho3D classes reside in namespace Urho3D
 namespace Urho3D
 {
 
 	/// Enemy died
-	EVENT(E_PLAYERDIED, PlayerDied)
+	URHO3D_EVENT(E_PLAYERDIED, PlayerDied)
 	{                                           // bool
-		PARAM(P_NODE, NodePtr);                 // Node Ptr
+		URHO3D_PARAM(P_NODE, NodePtr);                 // Node Ptr
 	}
 }
 
@@ -29,7 +29,7 @@ const float MOVE_FORCE = 1.5f;
 
 class PlayerEntity : public LogicComponent
 {
-	OBJECT(PlayerEntity);
+	//OBJECT(PlayerEntity);
 public:
 	//-------------------------------------------------------------------------
 	// Constructors & Destructors

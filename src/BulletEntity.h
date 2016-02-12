@@ -1,12 +1,13 @@
 #pragma once
-#include "LogicComponent.h"
+#include "Urho3D/Urho3D.h"
+#include "Urho3D/Scene/LogicComponent.h"
 
 // All Urho3D classes reside in namespace Urho3D
 using namespace Urho3D;
 
 class BulletEntity :  public LogicComponent
 {
-	OBJECT(Bullet);
+        URHO3D_OBJECT(BulletEntity, LogicComponent);
     public:
         BulletEntity(Context* context);
         ~BulletEntity();

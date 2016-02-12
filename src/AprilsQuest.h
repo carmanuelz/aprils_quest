@@ -16,7 +16,7 @@ namespace Urho3D
 ///     - Handling keyboard to move and zoom 2D camera
 class AprilsQuest : public BaseApplication
 {
-    OBJECT(AprilsQuest);
+    URHO3D_OBJECT(AprilsQuest, BaseApplication);
 
 public:
     /// Construct.

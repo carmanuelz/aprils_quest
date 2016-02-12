@@ -1,29 +1,30 @@
 #include "PlayerEntity.h"
-#include "Context.h"
-#include "Component.h"
-#include "Node.h"
-#include "RigidBody2D.h"
+#include "Urho3D/Core/Context.h"
+#include "Urho3D/Scene/Component.h"
+#include "Urho3D/Scene/Node.h"
+#include "Urho3D/Urho2D/RigidBody2D.h"
 #include "iostream"
-#include "AnimatedSprite2D.h"
-#include "AnimationSet2D.h"
-#include "PhysicsEvents2D.h"
+#include "Urho3D/Urho2D/AnimatedSprite2D.h"
+#include "Urho3D/Urho2D/AnimationSet2D.h"
+#include "Urho3D/Urho2D/PhysicsEvents2D.h"
 #include "BulletEntity.h"
-#include "StaticSprite2D.h"
-#include "ResourceCache.h"
-#include "Scene.h"
-#include "CollisionCircle2D.h"
-#include "RigidBody2D.h"
-#include "Input.h"
-#include "Vector3.h"
-#include "Graphics.h"
-#include "Camera.h"
-#include "PhysicsWorld2D.h"
-#include "DebugRenderer.h"
+#include "Urho3D/Urho2D/StaticSprite2D.h"
+#include "Urho3D/Resource/ResourceCache.h"
+#include "Urho3D/Scene/Scene.h"
+#include "Urho3D/Urho2D/CollisionCircle2D.h"
+#include "Urho3D/Urho2D/RigidBody2D.h"
+#include "Urho3D/Input/Input.h"
+#include "Urho3D/Math/Vector3.h"
+#include "Urho3D/Graphics/Graphics.h"
+#include "Urho3D/Graphics/Camera.h"
+#include "Urho3D/Urho2D/PhysicsWorld2D.h"
+#include "Urho3D/Graphics/DebugRenderer.h"
 #include "EnemyEntity.h"
+#include "Urho3D/Urho2D/Sprite2D.h"
 #include <math.h>
 
 #define DEGTORAD 0.0174532925199432957f
-#define RADTODEG 57.295779513082320876f
+//#define RADTODEG 57.295779513082320876f
 #define M_PI 3.14159265358979323846
 
 PlayerEntity::PlayerEntity(Context* context) : LogicComponent(context)
@@ -43,14 +44,15 @@ void PlayerEntity::RegisterObject(Context* context)
 void PlayerEntity::Start()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    AnimationSet2D* animationSet = cache->GetResource<AnimationSet2D>("Urho2D/april.scml");
+    AnimationSet2D* animationSet = cache->GetResource<AnimationSet2D>("Urho2D/April.scml");
     if (!animationSet)
         return;
 
     AnimatedSprite2D* animatedSprite = node_->CreateComponent<AnimatedSprite2D>();
     animatedSprite->SetLayer(100);
     // Set animation
-    animatedSprite->SetAnimation(animationSet, "idle");
+    animatedSprite->SetAnimationSet(animationSet);
+    animatedSprite->SetAnimation("idle");
     animatedSprite->SetSpeed(1.5f);
 
     RigidBody2D* bodysprite = node_->CreateComponent<RigidBody2D>();
@@ -74,7 +76,8 @@ void PlayerEntity::Start()
     if (!weaponanimset)
         return;
     AnimatedSprite2D* gunanim = weaponnode->CreateComponent<AnimatedSprite2D>();
-    gunanim->SetAnimation(weaponanimset, "shoot");
+    gunanim->SetAnimationSet(weaponanimset);
+    gunanim->SetAnimation("shoot");
     gunanim->SetLayer(7);
 }
 

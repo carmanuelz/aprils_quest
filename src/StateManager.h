@@ -1,10 +1,10 @@
 
 #pragma once
-#include "Object.h"
-#include "Context.h"
-#include "Ptr.h"
-#include "List.h"
-#include "HashMap.h"
+#include "Urho3D/Core/Object.h"
+#include "Urho3D/Core/Context.h"
+#include "Urho3D/Container/Ptr.h"
+#include "Urho3D/Container/List.h"
+#include "Urho3D/Container/HashMap.h"
 
 // All Urho3D classes reside in namespace Urho3D
 namespace Urho3D
@@ -20,7 +20,7 @@ class State;
 class StateManager : public Object
 {
 	// Enable type information.
-	OBJECT(StateManager);
+	URHO3D_OBJECT(StateManager, Object);
 	//-------------------------------------------------------------------------
 	// Friend List
 	//-------------------------------------------------------------------------
@@ -86,8 +86,8 @@ private:
 class State : public Object
 {
 	// Enable type information.
-	OBJECT(State);
-	BASEOBJECT(State);
+	URHO3D_OBJECT(State, Object);
+	//URHO3D_BASEOBJECT(State);
 	//-------------------------------------------------------------------------
 	// Friend List
 	//-------------------------------------------------------------------------

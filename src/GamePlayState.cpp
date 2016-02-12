@@ -1,42 +1,31 @@
-#include "AnimatedSprite2D.h"
-#include "AnimationSet2D.h"
-#include "Camera.h"
-#include "CoreEvents.h"
-#include "Font.h"
-#include "Graphics.h"
-#include "Input.h"
-#include "Octree.h"
-#include "Renderer.h"
-#include "ResourceCache.h"
-#include "Scene.h"
-#include "Sprite2D.h"
-#include "StaticSprite2D.h"
-#include "Text.h"
-#include "DebugNew.h"
-#include "UIElement.h"
-#include "Sprite.h"
-#include "Node.h"
-#include "UI.h"
-#include "Engine.h"
+#include "Urho3D/Urho2D/AnimatedSprite2D.h"
+#include "Urho3D/Urho2D/AnimationSet2D.h"
+#include "Urho3D/Graphics/Camera.h"
+#include "Urho3D/Core/CoreEvents.h"
+#include "Urho3D/UI/Font.h"
+#include "Urho3D/Graphics/Graphics.h"
+#include "Urho3D/Input/Input.h"
+#include "Urho3D/Graphics/Octree.h"
+#include "Urho3D/Graphics/Renderer.h"
+#include "Urho3D/Resource/ResourceCache.h"
+#include "Urho3D/Scene/Scene.h"
+#include "Urho3D/Urho2D/Sprite2D.h"
+#include "Urho3D/UI/Text.h"
+#include "Urho3D/UI/UI.h"
 #include "iostream"
-#include "RigidBody2D.h"
-#include "PhysicsWorld2D.h"
-#include "DebugRenderer.h"
-#include "CollisionCircle2D.h"
-#include "File.h"
-#include "FileSystem.h"
-#include "PhysicsEvents2D.h"
-#include "InputEvents.h"
+#include "Urho3D/Urho2D/RigidBody2D.h"
+#include "Urho3D/Urho2D/PhysicsWorld2D.h"
+#include "Urho3D/Graphics/DebugRenderer.h"
+#include "Urho3D/Urho2D/CollisionCircle2D.h"
+#include "Urho3D/Urho2D/PhysicsEvents2D.h"
 #include "BulletEntity.h"
 #include "AStarFinder.h"
 #include "EnemyEntity.h"
-#include "Color.h"
-#include "JSONFile.h"
-#include "JSONValue.h"
-#include "LuaFile.h"
-#include "LuaFunction.h"
-#include "LuaScript.h"
-#include "LuaScriptInstance.h"
+#include "Urho3D/Resource/JSONFile.h"
+#include "Urho3D/LuaScript/LuaFile.h"
+#include "Urho3D/LuaScript/LuaFunction.h"
+#include "Urho3D/LuaScript/LuaScript.h"
+#include "Urho3D/LuaScript/LuaScriptInstance.h"
 
 #include "GamePlayState.h"
 
@@ -112,9 +101,11 @@ void GamePlayState::CreateScene()
 
     JSONValue rootjson = data->GetRoot();
 
-    JSONValue blocks = rootjson.GetChild("blocks");
-
-    Vector2 position = rootjson.GetVector2("playerpost");
+    JSONValue blocks = rootjson.Get("blocks");
+    JSONValue playerJsonPosition = rootjson.Get("playerpost");
+    String stringPosition = playerJsonPosition.GetString();
+    //std::cout<< stringPosition <<std::endl;
+    Vector2 position(50,30);//rootjson.GetObject("playerpost");
 
     AStarFinder* finder = scene_->CreateComponent<AStarFinder>();
     finder->LoadMap(blocks);
@@ -190,11 +181,11 @@ void GamePlayState::SetupViewport()
 void GamePlayState::SubscribeToEvents()
 {
     // Subscribe HandleUpdate() function for processing update events
-    SubscribeToEvent(E_UPDATE, HANDLER(GamePlayState, HandleUpdate));
-    SubscribeToEvent(E_PHYSICSBEGINCONTACT2D, HANDLER(GamePlayState, HandleBeginContact));
-    SubscribeToEvent(E_MOUSEBUTTONDOWN, HANDLER(GamePlayState, HandleMouseButtonDownPressed));
-    SubscribeToEvent(E_JOYSTICKBUTTONDOWN, HANDLER(GamePlayState, HandleJoystickButtonDownPressed));
-    SubscribeToEvent(E_JOYSTICKAXISMOVE, HANDLER(GamePlayState, HandleJoystickAxisMove));
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(GamePlayState, HandleUpdate));
+    SubscribeToEvent(E_PHYSICSBEGINCONTACT2D, URHO3D_HANDLER(GamePlayState, HandleBeginContact));
+    SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(GamePlayState, HandleMouseButtonDownPressed));
+    SubscribeToEvent(E_JOYSTICKBUTTONDOWN, URHO3D_HANDLER(GamePlayState, HandleJoystickButtonDownPressed));
+    SubscribeToEvent(E_JOYSTICKAXISMOVE, URHO3D_HANDLER(GamePlayState, HandleJoystickAxisMove));
 }
 
 void GamePlayState::HandleBeginContact(StringHash eventType, VariantMap& eventData)

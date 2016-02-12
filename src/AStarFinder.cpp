@@ -1,12 +1,7 @@
 #include "AStarFinder.h"
-
-#include "File.h"
-#include "Deserializer.h"
-#include "Vector.h"
-#include "Vector2.h";
-#include "Vector2.h"
-#include "DebugRenderer.h"
-#include "Str.h"
+#include "Urho3D/IO/File.h"
+#include "Urho3D/Graphics/DebugRenderer.h"
+//#include "Str.h"
 
 AStarFinder::AStarFinder(Context* context): Component(context)
 {
@@ -36,10 +31,12 @@ void AStarFinder::LoadMap(JSONValue blocks)
         }
     }
 
-    for(int i = 0 ; i < blocks.GetSize() ; i++)
+    JSONArray blocks_array = blocks.GetArray();
+    for(int i = 0 ; i < blocks_array.Size() ; i++)
     {
-        IntVector2 point = blocks.GetIntVector2(i);
-        blockgrid[point.y_][point.x_] = 1;
+        JSONValue json_point = blocks_array[i];
+        JSONObject point = json_point.GetObject();
+        //blockgrid[point.y_][point.x_] = 1;
     }
 
 

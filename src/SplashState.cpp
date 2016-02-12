@@ -21,37 +21,36 @@
 //
 
 #include "SplashState.h"
-#include "Object.h"
-#include "CoreEvents.h"
-#include "ResourceCache.h"
-#include "List.h"
-#include "UI.h"
+#include "Urho3D/Core/Object.h"
+#include "Urho3D/Core/CoreEvents.h"
+#include "Urho3D/Resource/ResourceCache.h"
+#include "Urho3D/Container/List.h"
+#include "Urho3D/UI/UI.h"
 
-#include "Button.h"
-#include "CheckBox.h"
-#include "CoreEvents.h"
-#include "Engine.h"
-#include "Input.h"
-#include "LineEdit.h"
-#include "Text.h"
-#include "UIEvents.h"
-#include "Window.h"
+#include "Urho3D/UI/Button.h"
+#include "Urho3D/UI/CheckBox.h"
+#include "Urho3D/Core/CoreEvents.h"
+#include "Urho3D/Engine/Engine.h"
+#include "Urho3D/Input/Input.h"
+#include "Urho3D/UI/LineEdit.h"
+#include "Urho3D/UI/Text.h"
+#include "Urho3D/UI/UIEvents.h"
+#include "Urho3D/UI/Window.h"
 
-#include "DebugNew.h"
-#include "Texture2D.h"
-#include "ResourceCache.h"
-#include "XMLFile.h"
-#include "Octree.h"
-#include "StaticModel.h"
-#include "Material.h"
-#include "Model.h"
-#include "Light.h"
-#include "Vector3.h"
-#include "Quaternion.h"
-#include "Camera.h"
-#include "Renderer.h"
-#include "Viewport.h"
-#include "Font.h"
+#include "Urho3D/Graphics/Texture2D.h"
+#include "Urho3D/Resource/ResourceCache.h"
+#include "Urho3D/Resource/XMLFile.h"
+#include "Urho3D/Graphics/Octree.h"
+#include "Urho3D/Graphics/StaticModel.h"
+#include "Urho3D/Graphics/Material.h"
+#include "Urho3D/Graphics/Model.h"
+#include "Urho3D/Graphics/Light.h"
+#include "Urho3D/Math/Vector3.h"
+#include "Urho3D/Math/Quaternion.h"
+#include "Urho3D/Graphics/Camera.h"
+#include "Urho3D/Graphics/Renderer.h"
+#include "Urho3D/Graphics/Viewport.h"
+#include "Urho3D/UI/Font.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -119,7 +118,7 @@ bool SplashState::Begin()
 	GetSubsystem<Engine>()->RunFrame();
 
 	// Subscribe HandleUpdate() function for processing update events
-	SubscribeToEvent(E_UPDATE, HANDLER(SplashState, HandleUpdate));
+	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(SplashState, HandleUpdate));
 
 	// Call base class implementation
 	return State::Begin();;
