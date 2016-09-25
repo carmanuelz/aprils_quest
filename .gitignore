@@ -1,10 +1,16 @@
 # -- Urho3D------
 .idea/
 CMake
+*.sh
 bin/Release/*
 bin/Debug/*
+bin/Autoload
+bin/CoreData
+native-shared/
 obj/*
 *.cbp
 *.dll
 *.depend
 *.layout
+Rakefile
+AprilsQuest.log
