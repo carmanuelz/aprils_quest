@@ -169,7 +169,7 @@ void MenuState::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 
 	int key = eventData[P_KEY].GetInt();
 	// Close console (if open) or exit when ESC is pressed
-	if (key == KEY_ESC)
+	if (key == KEY_ESCAPE)
 	{
 		Quit();
 	}

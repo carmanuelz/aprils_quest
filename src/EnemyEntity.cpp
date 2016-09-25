@@ -131,7 +131,7 @@ void EnemyEntity::Shoot()
 	/// create Enemy component which controls the Enemy behavior
 
 	bulletBody->SetLinearVelocity(dir*5);
-	BulletEntity* b = bulletNode_->CreateComponent<BulletEntity>();
+	bulletNode_->CreateComponent<BulletEntity>();
 
 	isBusy = true;
 	timeBusy = 0;

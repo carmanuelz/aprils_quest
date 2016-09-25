@@ -30,7 +30,6 @@
 #include "GamePlayState.h"
 
 // Number of static sprites to draw
-static const unsigned NUM_SPRITES = 200;
 static const StringHash VAR_MOVESPEED("MoveSpeed");
 static const StringHash VAR_ROTATESPEED("RotateSpeed");
 
@@ -105,7 +104,7 @@ void GamePlayState::CreateScene()
     JSONValue playerJsonPosition = rootjson.Get("playerpost");
     String stringPosition = playerJsonPosition.GetString();
     //std::cout<< stringPosition <<std::endl;
-    Vector2 position(50,30);//rootjson.GetObject("playerpost");
+    Vector2 position(1,2);//rootjson.GetObject("playerpost");
 
     AStarFinder* finder = scene_->CreateComponent<AStarFinder>();
     finder->LoadMap(blocks);
@@ -121,19 +120,16 @@ void GamePlayState::CreateScene()
     targetstaticsprite->SetSprite(targetsprite);
     targetstaticsprite->SetLayer(65000);
 
-    float halfWidth = graphics->GetWidth() * 0.5f * PIXEL_SIZE;
-    float halfHeight = graphics->GetHeight() * 0.5f * PIXEL_SIZE;
-
     // Get animation set
     SharedPtr<Node> spriteNode(scene_->CreateChild("Player"));
     spriteNode->SetPosition2D(position);
     player_ = spriteNode->CreateComponent<PlayerEntity>();
 
-    LuaFile* scriptFile = cache->GetResource<LuaFile>("Scripts/player.lua");
+    /*LuaFile* scriptFile = cache->GetResource<LuaFile>("Scripts/player.lua");
     if (!scriptFile)
         return;
     LuaScriptInstance* instance = spriteNode->CreateComponent<LuaScriptInstance>();
-    instance->CreateObject(scriptFile, "Rotator");
+    instance->CreateObject(scriptFile, "Rotator");*/
 
     SharedPtr<Node> enemynode(scene_->CreateChild("EnemyNode"));
     enemynode->SetPosition(Vector3(7.75f, 10.25f, 0.0f));
@@ -141,15 +137,15 @@ void GamePlayState::CreateScene()
 
     SharedPtr<Node> enemynode2(scene_->CreateChild("EnemyNode"));
     enemynode2->SetPosition(Vector3(7.5f, 5.0f, 0.0f));
-    EnemyEntity* enemy2_ = enemynode2->CreateComponent<EnemyEntity>();
+    enemynode2->CreateComponent<EnemyEntity>();
 
     SharedPtr<Node> enemynode3(scene_->CreateChild("EnemyNode"));
     enemynode3->SetPosition(Vector3(10.0f, 7.5f, 0.0f));
-    EnemyEntity* enemy3_ = enemynode3->CreateComponent<EnemyEntity>();
+    enemynode3->CreateComponent<EnemyEntity>();
 
     SharedPtr<Node> enemynode4(scene_->CreateChild("EnemyNode"));
     enemynode4->SetPosition(Vector3(5.0f, 7.5f, 0.0f));
-    EnemyEntity* enemy4_ = enemynode4->CreateComponent<EnemyEntity>();
+    enemynode4->CreateComponent<EnemyEntity>();
 }
 
 void GamePlayState::CreateUI()
@@ -239,13 +235,8 @@ void GamePlayState::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
     using namespace Update;
 
-    // Take the frame time step, which is stored as a float
-    float timeStep = eventData[P_TIMESTEP].GetFloat();
-
     // Move the camera, scale movement with time step
     //MoveCamera(timeStep);
-
-    Graphics* graphics = GetSubsystem<Graphics>();
     Input* input = GetSubsystem<Input>();
 
     if (GetSubsystem<UI>()->GetFocusElement())
@@ -258,8 +249,6 @@ void GamePlayState::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
     Vector2 posplayer(player_->GetNode()->GetPosition2D());
 
-    float halfWidth = (float)graphics->GetWidth() * 0.5f * PIXEL_SIZE;
-    float halfHeight = (float)graphics->GetHeight() * 0.5f * PIXEL_SIZE;
 
     if (player_)
     {
