@@ -53,7 +53,7 @@ void PlayerEntity::Start()
     // Set animation
     animatedSprite->SetAnimationSet(animationSet);
     animatedSprite->SetAnimation("idle");
-    animatedSprite->SetSpeed(1.5f);
+    animatedSprite->SetSpeed(-1.5f);
 
     RigidBody2D* bodysprite = node_->CreateComponent<RigidBody2D>();
     bodysprite->SetBodyType(BT_DYNAMIC);
@@ -78,7 +78,7 @@ void PlayerEntity::Start()
     AnimatedSprite2D* gunanim = weaponnode->CreateComponent<AnimatedSprite2D>();
     gunanim->SetAnimationSet(weaponanimset);
     gunanim->SetAnimation("shoot");
-    gunanim->SetLayer(7);
+    gunanim->SetOrderInLayer(7);
 }
 
 void PlayerEntity::DelayedStart()
@@ -114,11 +114,12 @@ void PlayerEntity::Update(float timeStep)
     else
         animatesprite->SetFlipX(false);
 
-    if((controls_.IsDown(LOOK_LEFT) && controls_.IsDown(CTRL_RIGHT)) ||
-       (!controls_.IsDown(LOOK_LEFT) && controls_.IsDown(CTRL_LEFT)))
+    /*if((controls_.IsDown(LOOK_LEFT) && controls_.IsDown(CTRL_RIGHT)) ||
+       (!controls_.IsDown(LOOK_LEFT) && controls_.IsDown(CTRL_LEFT))) {
         animatesprite->SetSpeed(-1.5f);
-    else
+    } else {
         animatesprite->SetSpeed(1.5f);
+    }*/
 
     if(!moveDir.Equals(Vector2::ZERO))
     {

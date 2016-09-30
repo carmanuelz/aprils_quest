@@ -118,7 +118,7 @@ void GamePlayState::CreateScene()
 
     StaticSprite2D* targetstaticsprite = targetNode_->CreateComponent<StaticSprite2D>();
     targetstaticsprite->SetSprite(targetsprite);
-    targetstaticsprite->SetLayer(65000);
+    targetstaticsprite->SetOrderInLayer(65000);
 
     // Get animation set
     SharedPtr<Node> spriteNode(scene_->CreateChild("Player"));

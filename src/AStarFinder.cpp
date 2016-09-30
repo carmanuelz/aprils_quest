@@ -59,8 +59,8 @@ void AStarFinder::LoadMap(JSONValue blocks)
                 Grid[j][k]->walkable = false;
                 std::cout<<"0";
             }
-            else
-                std::cout<<" ";
+            //else
+              //  std::cout<<" ";
         }
         std::cout<<std::endl;
     }
