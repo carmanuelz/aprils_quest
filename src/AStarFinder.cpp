@@ -34,9 +34,9 @@ void AStarFinder::LoadMap(JSONValue blocks)
     JSONArray blocks_array = blocks.GetArray();
     for(int i = 0 ; i < blocks_array.Size() ; i++)
     {
-        JSONValue json_point = blocks_array[i];
-        JSONObject point = json_point.GetObject();
-        //blockgrid[point.y_][point.x_] = 1;
+        int x_ = blocks_array[i].Get("x_").GetInt();
+        int y_ = blocks_array[i].Get("y_").GetInt();
+        blockgrid[y_][x_] = 1;
     }
 
 
@@ -57,12 +57,8 @@ void AStarFinder::LoadMap(JSONValue blocks)
             if (blockgrid[j][k])
             {
                 Grid[j][k]->walkable = false;
-                std::cout<<"0";
             }
-            //else
-              //  std::cout<<" ";
         }
-        std::cout<<std::endl;
     }
 }
 
@@ -209,17 +205,17 @@ Vector<IntVector2*> AStarFinder::findPath(int startX, int startY, int endX, int 
 
     OpenList.push_back(StartNode);
     StartNode->opened = true;
-
+    Nodo *node;
     while(!OpenList.empty())
     {
         std::sort(OpenList.begin(),OpenList.end(),compareByLF);
-        Nodo *node = OpenList.back();
+        node = OpenList.back();
         OpenList.pop_back();
         node->closed = true;
 
         if(compareNode(node,EndNode))
         {
-            return smoothenPath(backtrace(node));
+            break;
         }
 
         Vector<Nodo*> Vecinos = getNeighbors(node);
@@ -250,6 +246,7 @@ Vector<IntVector2*> AStarFinder::findPath(int startX, int startY, int endX, int 
             }
         }
     }
+    return smoothenPath(backtrace(node));
 }
 
 Vector<IntVector2*> AStarFinder::getLine(int x0, int y0, int x1, int y1)

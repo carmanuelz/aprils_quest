@@ -1,0 +1,17 @@
+<TextureAtlas imagePath="tileset.png">
+	<SubTexture name="tile1.png" x="0" y="34" width="32" height="32"/>
+	<SubTexture name="tile10.png" x="136" y="68" width="32" height="32"/>
+	<SubTexture name="tile11.png" x="68" y="0" width="32" height="32"/>
+	<SubTexture name="tile12.png" x="34" y="68" width="32" height="32"/>
+	<SubTexture name="tile13.png" x="34" y="34" width="32" height="32"/>
+	<SubTexture name="tile14.png" x="34" y="0" width="32" height="32"/>
+	<SubTexture name="tile15.png" x="0" y="68" width="32" height="32"/>
+	<SubTexture name="tile2.png" x="0" y="0" width="32" height="32"/>
+	<SubTexture name="tile3.png" x="68" y="34" width="32" height="32"/>
+	<SubTexture name="tile4.png" x="136" y="34" width="32" height="32"/>
+	<SubTexture name="tile5.png" x="136" y="0" width="32" height="32"/>
+	<SubTexture name="tile6.png" x="102" y="68" width="32" height="32"/>
+	<SubTexture name="tile7.png" x="102" y="34" width="32" height="32"/>
+	<SubTexture name="tile8.png" x="102" y="0" width="32" height="32"/>
+	<SubTexture name="tile9.png" x="68" y="68" width="32" height="32"/>
+</TextureAtlas>

@@ -7,7 +7,6 @@
 #include "Urho3D/DebugNew.h"
 
 // Number of static sprites to draw
-static const unsigned NUM_SPRITES = 200;
 static const StringHash VAR_MOVESPEED("MoveSpeed");
 static const StringHash VAR_ROTATESPEED("RotateSpeed");
 

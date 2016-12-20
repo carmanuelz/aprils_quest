@@ -22,8 +22,8 @@ void BaseApplication::Setup()
     // Modify engine startup parameters
     engineParameters_["WindowTitle"] = "April's Quest";
     engineParameters_["LogName"]     = GetSubsystem<FileSystem>()->GetProgramDir() + "Data/s" + GetTypeName() + ".log";
-    engineParameters_["VSync"] = true;
-    engineParameters_["FrameLimiter"] = 60;
+    //engineParameters_["VSync"] = true;
+    //engineParameters_["FrameLimiter"] = 60;
     engineParameters_["FullScreen"]  = false;
     engineParameters_["Headless"]    = false;
     engineParameters_["WindowWidth"] = 800;
