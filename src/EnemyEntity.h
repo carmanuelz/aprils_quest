@@ -4,6 +4,7 @@
 #include "Urho3D/Urho2D/StaticSprite2D.h"
 #include "Urho3D/Math/Vector2.h"
 #include "Urho3D/Scene/Node.h"
+#include "ExpirationTimer.h"
 
 // All Urho3D classes reside in namespace Urho3D
 namespace Urho3D
@@ -79,6 +80,7 @@ private:
     bool hasrange = true;
     float facVel = 1;
     Vector2 findposition;
+    ExpirationTimer timer_;
 
     SharedPtr<StaticSprite2D> objectsprite;
 

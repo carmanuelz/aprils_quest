@@ -13,6 +13,7 @@
 #include "Urho3D/Urho2D/CollisionBox2D.h"
 #include "Urho3D/Resource/ResourceCache.h"
 #include "Urho3D/Urho2D/StaticSprite2D.h"
+#include <ctime>
 
 
 MapGenerator::MapGenerator(Context* context): Component(context)
@@ -33,58 +34,58 @@ void MapGenerator::initMap(int width, int height, int massAmount, int massSize)
 {
     createFloor(width, height);
     
-    int **blockgrid = new int*[height];
-    for (int i = 0; i <height; ++i)
-        blockgrid[i] = new int[width];
+    blockGrid = new int*[height];
+    for (int i = 0; i < height; ++i)
+        blockGrid[i] = new int[width];
     
     for(int i = 0 ; i < height; i++)
     {
         for(int j = 0 ; j <  width; j++)
         {
-            blockgrid[j][i] = 0;
+            blockGrid[i][j] = 0;
         }
     }
     
-    for (int y = 0; y < width; y++) {
-        for(int x = 0 ; x < height; x++) {
+    //srand(time(0));
+    for (int y = 0; y < height; y++) {
+        for(int x = 0 ; x < width; x++) {
             int probability = 0;
             int probabilityModifier = 0;
-            if (x%width<2|| x%width>(width-3)||y%height<2||y%height>(height-3)){
+            if ( x<2 || x>(width-3) || y<2 || y>(height-3) ){
                 probability=0;
             } else {
                 probability = 15 + massAmount;
                 
                 if (x>2 && y>2){
                     int conformity =
-                    (blockgrid[y-1][x-1] == blockgrid[y-2][x-1])+
-                    (blockgrid[y-1][x-1] == blockgrid[y-1][x])+
-                    (blockgrid[y-1][x-1] == blockgrid[y][x-1])+
-                    (blockgrid[y-1][x-1] == blockgrid[y-1][x-2]);
+                    (blockGrid[y-1][x-1] == blockGrid[y-2][x-1])+
+                    (blockGrid[y-1][x-1] == blockGrid[y-1][x])+
+                    (blockGrid[y-1][x-1] == blockGrid[y][x-1])+
+                    (blockGrid[y-1][x-1] == blockGrid[y-1][x-2]);
                     if (conformity<2) {
-                        if(blockgrid[y-1][x-1] == 0) {
-                            blockgrid[y-1][x-1] = 1;
+                        if(blockGrid[y-1][x-1] == 0) {
+                            blockGrid[y-1][x-1] = 1;
                         } else {
-                            blockgrid[y-1][x-1] = 0;
+                            blockGrid[y-1][x-1] = 0;
                         }
                     }
                 }
-                probabilityModifier = (blockgrid[y][x-1]+blockgrid[y-1][x]+blockgrid[y-1][x+1])*(19+(massSize*1.4));
+                probabilityModifier = (blockGrid[y][x-1]+blockGrid[y-1][x]+blockGrid[y-1][x+1])*(19+(massSize*1.4));
             }
-            
             int rndm = rand() % 101;
             if(rndm<(probability+probabilityModifier)) {
-                blockgrid[y][x]= 1;
+                blockGrid[y][x]= 1;
             }
         }
     }
     
-    for (int j = height-1; j >= 0; j-- )
+    for (int j = 0; j < height; j++ )
     {
-        for (int k = 0; k < height; k++)
+        for (int k = 0; k < width; k++)
         {
-            if (!blockgrid[j][k])
+            if (!blockGrid[j][k])
             {
-                createBlockNode(Vector3(j/2.0f - 0.25,k/2.0f - 0.25,0));
+                createBlockNode(Vector3(k/2.0f + 0.25,j/2.0f + 0.25,0));
             }
         }
     }
@@ -152,4 +153,9 @@ void MapGenerator::createBlockNode(Vector3 position)
 {
     Node* box = getBaseBlock()->Clone();
     box->SetPosition(position);
+}
+
+int ** MapGenerator::getNodeGrid()
+{
+    return blockGrid;
 }

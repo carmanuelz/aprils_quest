@@ -92,7 +92,7 @@ void GamePlayState::CreateScene()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     
     MapGenerator* mapGenerator = scene_->CreateComponent<MapGenerator>();
-    mapGenerator->initMap(60, 60, 3, 4);
+    mapGenerator->initMap(40, 50, 3, 4);
 
     nodeWall = scene_->CreateChild("NodoWall");
 
@@ -113,7 +113,7 @@ void GamePlayState::CreateScene()
     Vector2 position(5,7);//rootjson.GetObject("playerpost");
 
     AStarFinder* finder = scene_->CreateComponent<AStarFinder>();
-    finder->LoadMap(blocks);
+    finder->LoadMap(mapGenerator->getNodeGrid());
     
     // Create 2D physics world component
 
@@ -137,11 +137,11 @@ void GamePlayState::CreateScene()
     LuaScriptInstance* instance = spriteNode->CreateComponent<LuaScriptInstance>();
     instance->CreateObject(scriptFile, "Rotator");*/
 
-    /*SharedPtr<Node> enemynode(scene_->CreateChild("EnemyNode"));
-    enemynode->SetPosition(Vector3(7.75f, 10.25f, 0.0f));
+    SharedPtr<Node> enemynode(scene_->CreateChild("EnemyNode"));
+    enemynode->SetPosition(Vector3(5.0f, 6.0f, 0.0f));
     enemy_ = enemynode->CreateComponent<EnemyEntity>();
 
-    SharedPtr<Node> enemynode2(scene_->CreateChild("EnemyNode"));
+    /*SharedPtr<Node> enemynode2(scene_->CreateChild("EnemyNode"));
     enemynode2->SetPosition(Vector3(7.5f, 5.0f, 0.0f));
     enemynode2->CreateComponent<EnemyEntity>();
 
@@ -283,11 +283,11 @@ void GamePlayState::HandleUpdate(StringHash eventType, VariantMap& eventData)
         std::cout<<"Nodo cargado"<<std::endl;
     }
 
-    //scene_->GetComponent<AStarFinder>()->drawdebug();
-    //enemy_->CastTarget(player_->GetNode(),true);
+    scene_->GetComponent<AStarFinder>()->drawdebug();
+    enemy_->CastTarget(player_->GetNode(),true);
 
-    //PhysicsWorld2D* physicsWorld = scene_->GetComponent<PhysicsWorld2D>();
-    //physicsWorld->DrawDebugGeometry();
+    PhysicsWorld2D* physicsWorld = scene_->GetComponent<PhysicsWorld2D>();
+    physicsWorld->DrawDebugGeometry();
 
     targetNode_->SetPosition2D(GetMousePositionXY());
 

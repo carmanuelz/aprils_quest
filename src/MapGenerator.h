@@ -35,11 +35,13 @@ public:
     static void RegisterObject(Context* context);
     
     void initMap(int width, int height, int massAmount, int massSize);
+    int ** getNodeGrid();
 private:
     void createBlockNode(Vector3 position);
     void createFloorNode(Vector3 position);
     void createFloor(int width, int height);
     void createBlocks(int width, int height);
+    int **blockGrid;
     SharedPtr<Node> getBaseBlock();
     SharedPtr<Node> getBaseFloor();
     

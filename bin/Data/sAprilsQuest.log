@@ -1,14 +1,14 @@
-[Mon Dec 19 21:46:14 2016] INFO: Opened log file /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/Data/sAprilsQuest.log
-[Mon Dec 19 21:46:14 2016] INFO: Created 1 worker thread
-[Mon Dec 19 21:46:14 2016] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/Data/
-[Mon Dec 19 21:46:14 2016] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/CoreData/
-[Mon Dec 19 21:46:14 2016] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/Autoload/LargeData/
-[Mon Dec 19 21:46:15 2016] INFO: Set screen mode 800x600 windowed
-[Mon Dec 19 21:46:15 2016] INFO: Initialized input
-[Mon Dec 19 21:46:15 2016] INFO: Initialized user interface
-[Mon Dec 19 21:46:15 2016] INFO: Initialized renderer
-[Mon Dec 19 21:46:15 2016] INFO: Set audio mode 44100 Hz stereo interpolated
-[Mon Dec 19 21:46:15 2016] INFO: Initialized engine
+[Mon Feb 20 22:48:15 2017] INFO: Opened log file /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/Data/sAprilsQuest.log
+[Mon Feb 20 22:48:15 2017] INFO: Created 1 worker thread
+[Mon Feb 20 22:48:15 2017] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/Data/
+[Mon Feb 20 22:48:15 2017] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/CoreData/
+[Mon Feb 20 22:48:15 2017] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/Autoload/LargeData/
+[Mon Feb 20 22:48:16 2017] INFO: Set screen mode 800x600 windowed
+[Mon Feb 20 22:48:16 2017] INFO: Initialized input
+[Mon Feb 20 22:48:16 2017] INFO: Initialized user interface
+[Mon Feb 20 22:48:16 2017] INFO: Initialized renderer
+[Mon Feb 20 22:48:16 2017] INFO: Set audio mode 44100 Hz stereo interpolated
+[Mon Feb 20 22:48:16 2017] INFO: Initialized engine
 Used resources:
 Textures/Ramp.png
 Textures/Spot.png
@@ -16,6 +16,7 @@ Textures/UI.png
 Urho2D/sprites.png
 Urho2D/april.png
 Urho2D/gun.png
+Urho2D/soldado.png
 Techniques/NoTexture.xml
 RenderPaths/Forward.xml
 UI/DefaultStyle.xml
@@ -24,8 +25,12 @@ Fonts/Anonymous Pro.ttf
 Urho2D/sprites.xml
 Urho2D/April.xml
 Urho2D/gun.xml
+Urho2D/soldado.xml
 Urho2D/target.png
+Urho2D/object.png
+Urho2D/bullet.png
 Urho2D/April.scml
 Urho2D/gun.scml
+Urho2D/soldado.scml
 Shaders/GLSL/Urho2D.glsl
 Shaders/GLSL/Basic.glsl

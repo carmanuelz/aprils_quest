@@ -38,7 +38,7 @@ URHO3D_OBJECT(AStarFinder, Component);
 public:
     AStarFinder(Context* context);
     static void RegisterObject(Context* context);
-    void LoadMap(JSONValue blocks);
+    void LoadMap(int **blockgrid);
     Vector<IntVector2*> findPath(IntVector2 Pstart, IntVector2 Pend);
     Vector<IntVector2*> findPath(int startX, int startY, int endX, int endY);
     bool isWalkableAt(int x,int y);

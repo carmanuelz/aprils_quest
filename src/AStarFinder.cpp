@@ -1,7 +1,6 @@
 #include "AStarFinder.h"
 #include "Urho3D/IO/File.h"
 #include "Urho3D/Graphics/DebugRenderer.h"
-//#include "Str.h"
 
 AStarFinder::AStarFinder(Context* context): Component(context)
 {
@@ -13,52 +12,45 @@ void AStarFinder::RegisterObject(Context* context)
 	context->RegisterFactory<AStarFinder>();
 }
 
-void AStarFinder::LoadMap(JSONValue blocks)
+void AStarFinder::LoadMap(int** blockgrid)
 {
-    width = 30;
-    height = 30;
+    width = 40;
+    height = 50;
     tilesize = 0.5;
-
-    blockgrid = new int*[height];
-    for (int i = 0; i <height; ++i)
-        blockgrid[i] = new int[width];
-
-    for(int i = 0 ; i < height; i++)
-    {
-        for(int j = 0 ; j <  width; j++)
-        {
-            blockgrid[j][i] = 0;
-        }
-    }
-
-    JSONArray blocks_array = blocks.GetArray();
-    for(int i = 0 ; i < blocks_array.Size() ; i++)
-    {
-        int x_ = blocks_array[i].Get("x_").GetInt();
-        int y_ = blocks_array[i].Get("y_").GetInt();
-        blockgrid[y_][x_] = 1;
-    }
 
 
     Grid = new Nodo**[height];
     for (int i = 0; i < height; ++i)
     {
-        Grid[i] = new Nodo*[height];
-        for(int j = 0 ; j < height; j++)
+        Grid[i] = new Nodo*[width];
+        for(int j = 0 ; j < width; j++) {
             Grid[i][j] = new Nodo;
+        }
     }
 
-    for (int j = height-1; j >= 0; j-- )
+    for (int j = 0; j < height; j++ )
     {
-        for (int k = 0; k < height; k++)
+        for (int k = 0; k < width; k++)
         {
             Grid[j][k]->x = k;
             Grid[j][k]->y = j;
-            if (blockgrid[j][k])
-            {
+            if (!blockgrid[j][k]) {
                 Grid[j][k]->walkable = false;
             }
         }
+    }
+    
+    for (int j = height-1; j >=0 ; j-- )
+    {
+        for (int k = 0; k < width; k++)
+        {
+            if (blockgrid[j][k]) {
+                std::cout<<" ";
+            } else {
+                std::cout<<"O";
+            }
+        }
+        std::cout<<std::endl;
     }
 }
 
@@ -246,7 +238,8 @@ Vector<IntVector2*> AStarFinder::findPath(int startX, int startY, int endX, int 
             }
         }
     }
-    return smoothenPath(backtrace(node));
+    //return smoothenPath(backtrace(node));
+    return backtrace(node);
 }
 
 Vector<IntVector2*> AStarFinder::getLine(int x0, int y0, int x1, int y1)

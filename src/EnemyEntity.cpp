@@ -14,7 +14,8 @@
 #include "Urho3D/Urho2D/PhysicsWorld2D.h"
 #include "Urho3D/Urho2D/Sprite2D.h"
 
-EnemyEntity::EnemyEntity(Context* context) : LogicComponent(context)
+EnemyEntity::EnemyEntity(Context* context) : LogicComponent(context),
+timer_(1000)
 {
 	SetUpdateEventMask(USE_UPDATE);
 }
@@ -158,6 +159,11 @@ void EnemyEntity::findto(Vector2 to)
 
 void EnemyEntity::findto(float tox, float toy)
 {
+    if(timer_.Expired()) {
+        std::cout<<"go"<<std::endl;
+        timer_.Reset();
+        return;
+    }
     Vector2 pos = node_->GetPosition2D();
     AStarFinder* finder = GetScene()->GetComponent<AStarFinder>();
     float tilesize = finder->tilesize;
@@ -165,57 +171,54 @@ void EnemyEntity::findto(float tox, float toy)
     int endY = floor(toy/tilesize);
     float floatX = pos.x_/tilesize;
     float floatY = pos.y_/tilesize;
-    int startX;
-    int startY;
-    if((floatX - preenemmyX)>1.5f || (preenemmyX - floatX)>0.5f)
-    {
+    int startX = 0;
+    int startY = 0;
+    if((floatX - preenemmyX)>1.5f || (preenemmyX - floatX)>0.5f) {
         startX = floor(floatX);
         preenemmyX = startX;
+        startY = floor(floatY);
         flagdestinityX = true;
     }
-    else
-    {
-        startX = preenemmyX;
-        flagdestinityX = false;
+    else {
+        if(startX == 0) {
+            startX = preenemmyX;
+            flagdestinityX = false;
+        }
     }
 
-    if((floatY - preenemmyY)>1.5f || (preenemmyY - floatY)>0.5f)
-    {
+    if((floatY - preenemmyY)>1.5f || (preenemmyY - floatY)>0.5f) {
         startY = floor(floatY);
         preenemmyY = startY;
+        startX = floor(floatX);
         flagdestinityY = true;
     }
-    else
-    {
-        startY = preenemmyY;
-        flagdestinityY = false;
+    else {
+        if(startY == 0) {
+            startY = preenemmyY;
+            flagdestinityY = false;
+        }
     }
-    if((flagdestinityY || flagdestinityX) && finder->isWalkableAt(startX,startY) && finder->isWalkableAt(endX,endY))
-    {
+    if((flagdestinityY || flagdestinityX) && finder->isWalkableAt(startX,startY) && finder->isWalkableAt(endX,endY)) {
         route = finder->findPath(startX,startY,endX,endY);
         int len = route.Size();
-        if(len>1)
-        {
+        if(len>1) {
             Vector2 difstep((route[len-2]->x_ - route[len-1]->x_)*tilesize, (route[len-2]->y_ - route[len-1]->y_)*tilesize);
             float modenemy = sqrt(pow(difstep.x_,2)+pow(difstep.y_,2));
-            if(modenemy != 0)
-            {
+            if(modenemy != 0) {
                 Vector2 enemmyVU((difstep.x_)/modenemy,(difstep.y_)/modenemy);
                 Vector2 enemyVel(enemmyVU.x_*facVel,enemmyVU.y_*facVel);
                 vel = enemyVel;
-                if(enemyVel.x_ > 0)
+                if(enemyVel.x_ > 0) {
                     setRight();
-                else
-                {
-                    if(enemyVel.x_ < 0)
+                } else {
+                    if(enemyVel.x_ < 0) {
                         setLeft();
-                    else
-                    {
-                        if(tox < pos.x_)
+                    } else {
+                        if(tox < pos.x_) {
                             setLeft();
-
-                        else
+                        } else {
                             setRight();
+                        }
                     }
                 }
             }
