@@ -7,7 +7,7 @@
 #include "Urho3D/Urho2D/AnimatedSprite2D.h"
 #include "Urho3D/Urho2D/AnimationSet2D.h"
 #include "Urho3D/Urho2D/PhysicsEvents2D.h"
-#include "BulletEntity.h"
+#include "../BulletEntity.h"
 #include "Urho3D/Urho2D/StaticSprite2D.h"
 #include "Urho3D/Resource/ResourceCache.h"
 #include "Urho3D/Scene/Scene.h"

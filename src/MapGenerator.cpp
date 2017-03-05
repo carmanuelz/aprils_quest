@@ -46,7 +46,7 @@ void MapGenerator::initMap(int width, int height, int massAmount, int massSize)
         }
     }
     
-    //srand(time(0));
+    srand(time(0));
     for (int y = 0; y < height; y++) {
         for(int x = 0 ; x < width; x++) {
             int probability = 0;
@@ -137,7 +137,7 @@ void MapGenerator::createFloor(int width, int height)
     {
         for(int j = 0 ; j <  width; j++)
         {
-            createFloorNode(Vector3(i/2.0f - 0.25,j/2.0f - 0.25,0));
+            createFloorNode(Vector3(j/2.0f + 0.25,i/2.0f + 0.25,0));
         }
     }
     

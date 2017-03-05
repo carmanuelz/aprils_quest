@@ -3,13 +3,13 @@
 #include "Urho3D/Urho2D/RigidBody2D.h"
 #include "Urho3D/Urho2D/AnimatedSprite2D.h"
 #include "Urho3D/Urho2D/AnimationSet2D.h"
-#include "BulletEntity.h"
+#include "../BulletEntity.h"
 #include "Urho3D/Resource/ResourceCache.h"
 #include "Urho3D/Scene/Scene.h"
 #include "Urho3D/Urho2D/CollisionCircle2D.h"
 #include "Urho3D/Input/Input.h"
 #include "Urho3D/Graphics/Graphics.h"
-#include "AStarFinder.h"
+#include "../AStarFinder.h"
 #include "Urho3D/Graphics/DebugRenderer.h"
 #include "Urho3D/Urho2D/PhysicsWorld2D.h"
 #include "Urho3D/Urho2D/Sprite2D.h"
@@ -160,13 +160,12 @@ void EnemyEntity::findto(Vector2 to)
 void EnemyEntity::findto(float tox, float toy)
 {
     if(timer_.Expired()) {
-        std::cout<<"go"<<std::endl;
         timer_.Reset();
         return;
     }
     Vector2 pos = node_->GetPosition2D();
     AStarFinder* finder = GetScene()->GetComponent<AStarFinder>();
-    float tilesize = finder->tilesize;
+    float tilesize = finder->getTilesize();
     int endX = floor(tox/tilesize);
     int endY = floor(toy/tilesize);
     float floatX = pos.x_/tilesize;
@@ -258,7 +257,6 @@ void EnemyEntity::UpdateFind()
                 if(animatesprite->GetAnimation()!= "run")
                     animatesprite->SetAnimation("run", animatesprite->GetLoopMode());
                 findto(target_->GetPosition2D());
-                    //std::cout<<vel.x_<<" _ "<<vel.y_<<std::endl;
 
             }
             else
@@ -275,8 +273,8 @@ void EnemyEntity::UpdateFind()
         if(gotoflag)
         {
             if( (flagdestinityY || flagdestinityX) &&
-                floor(pos.x_/finder->tilesize)==floor(findposition.x_/finder->tilesize) &&
-                floor(pos.y_/finder->tilesize)==floor(findposition.y_/finder->tilesize))
+                floor(pos.x_/finder->getTilesize())==floor(findposition.x_/finder->getTilesize()) &&
+                floor(pos.y_/finder->getTilesize())==floor(findposition.y_/finder->getTilesize()))
             {
                 vel = Vector2::ZERO;
                 gotoflag = false;
@@ -423,6 +421,11 @@ void EnemyEntity::CastTarget(Node* target, bool isdebug)
             }
         }
     }
+}
+
+void EnemyEntity::handleCollision(Node* collisionNode)
+{
+    std::cout<<"colision"<<std::endl;
 }
 
 void EnemyEntity::SetTarget(Node* target)

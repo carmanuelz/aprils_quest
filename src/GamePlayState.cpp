@@ -26,9 +26,8 @@
 #include "Urho3D/IO/FileSystem.h"
 #include "BulletEntity.h"
 #include "AStarFinder.h"
-#include "EnemyEntity.h"
 #include "MapGenerator.h"
-
+#include "Character/Metadata.h"
 #include "GamePlayState.h"
 
 // Number of static sprites to draw
@@ -42,6 +41,7 @@ GamePlayState::GamePlayState(Context* context) : State(context)
 	EnemyEntity::RegisterObject(context);
 	AStarFinder::RegisterObject(context);
     MapGenerator::RegisterObject(context);
+    Metadata::RegisterObject(context);
 	context_->RegisterSubsystem(new LuaScript(context_));
 }
 
@@ -113,7 +113,7 @@ void GamePlayState::CreateScene()
     Vector2 position(5,7);//rootjson.GetObject("playerpost");
 
     AStarFinder* finder = scene_->CreateComponent<AStarFinder>();
-    finder->LoadMap(mapGenerator->getNodeGrid());
+    finder->LoadMap(mapGenerator->getNodeGrid(), 40, 50, 0.5f);
     
     // Create 2D physics world component
 
@@ -283,11 +283,11 @@ void GamePlayState::HandleUpdate(StringHash eventType, VariantMap& eventData)
         std::cout<<"Nodo cargado"<<std::endl;
     }
 
-    scene_->GetComponent<AStarFinder>()->drawdebug();
+    //scene_->GetComponent<AStarFinder>()->drawdebug();
     enemy_->CastTarget(player_->GetNode(),true);
 
     PhysicsWorld2D* physicsWorld = scene_->GetComponent<PhysicsWorld2D>();
-    physicsWorld->DrawDebugGeometry();
+    //physicsWorld->DrawDebugGeometry();
 
     targetNode_->SetPosition2D(GetMousePositionXY());
 

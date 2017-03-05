@@ -2,9 +2,10 @@
 #include "Urho3D/IO/File.h"
 #include "Urho3D/Graphics/DebugRenderer.h"
 
-AStarFinder::AStarFinder(Context* context): Component(context)
+AStarFinder::AStarFinder(Context* context):
+Component(context)
 {
-
+    
 }
 
 void AStarFinder::RegisterObject(Context* context)
@@ -12,25 +13,23 @@ void AStarFinder::RegisterObject(Context* context)
 	context->RegisterFactory<AStarFinder>();
 }
 
-void AStarFinder::LoadMap(int** blockgrid)
+void AStarFinder::LoadMap(int** blockgrid, int width, int height, float tilesize)
 {
-    width = 40;
-    height = 50;
-    tilesize = 0.5;
-
-
-    Grid = new Nodo**[height];
-    for (int i = 0; i < height; ++i)
+    width_ = width;
+    height_ = height;
+    tilesize_ = tilesize;
+    Grid = new Nodo**[height_];
+    for (int i = 0; i < height_; ++i)
     {
-        Grid[i] = new Nodo*[width];
-        for(int j = 0 ; j < width; j++) {
+        Grid[i] = new Nodo*[width_];
+        for(int j = 0 ; j < width_; j++) {
             Grid[i][j] = new Nodo;
         }
     }
 
-    for (int j = 0; j < height; j++ )
+    for (int j = 0; j < height_; j++ )
     {
-        for (int k = 0; k < width; k++)
+        for (int k = 0; k < width_; k++)
         {
             Grid[j][k]->x = k;
             Grid[j][k]->y = j;
@@ -40,9 +39,9 @@ void AStarFinder::LoadMap(int** blockgrid)
         }
     }
     
-    for (int j = height-1; j >=0 ; j-- )
+    for (int j = height_-1; j >=0 ; j-- )
     {
-        for (int k = 0; k < width; k++)
+        for (int k = 0; k < width_; k++)
         {
             if (blockgrid[j][k]) {
                 std::cout<<" ";
@@ -54,21 +53,26 @@ void AStarFinder::LoadMap(int** blockgrid)
     }
 }
 
+float AStarFinder::getTilesize()
+{
+    return tilesize_;
+}
+
 void AStarFinder::drawdebug()
 {
     DebugRenderer* debug = GetComponent<DebugRenderer>();
-    for(int i = 0; i < width; i++)
+    for(int i = 0; i < width_; i++)
     {
-        debug->AddLine( Vector3(i*tilesize, 0,0),
-                        Vector3(i*tilesize, width*tilesize, 0),
+        debug->AddLine( Vector3(i*tilesize_, 0,0),
+                        Vector3(i*tilesize_, width_*tilesize_, 0),
                         Color(0, 1, 1, 1),
                         false );
     }
 
-    for(int j = 0; j < height; j++)
+    for(int j = 0; j < height_; j++)
     {
-        debug->AddLine( Vector3(0, j*tilesize,0),
-                        Vector3(height*tilesize, j*tilesize, 0),
+        debug->AddLine( Vector3(0, j*tilesize_,0),
+                        Vector3(height_*tilesize_, j*tilesize_, 0),
                         Color(0, 1, 1, 1),
                         false );
     }
@@ -81,7 +85,7 @@ bool AStarFinder::isWalkableAt(int x, int y)
 
 bool AStarFinder::isInside(int x, int y)
 {
-    return (x >= 0 && x < width) && (y >= 0 && y < height);
+    return (x >= 0 && x < width_) && (y >= 0 && y < height_);
 };
 
 void AStarFinder::setWalkableAt(int x, int y, bool walkable)
@@ -340,9 +344,9 @@ Vector<IntVector2*> AStarFinder::smoothenPath(Vector<IntVector2*> path)
 
 void AStarFinder::resetGrid()
 {
-    for (int j = 0; j < height; j++ )
+    for (int j = 0; j < height_; j++ )
     {
-        for (int k = 0; k < width; k++)
+        for (int k = 0; k < width_; k++)
         {
             Grid[j][k]->reset();
         }

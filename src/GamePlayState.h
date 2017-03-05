@@ -3,8 +3,8 @@
 
 #include "Urho3D/Engine/Engine.h"
 #include "StateManager.h"
-#include "PlayerEntity.h"
-#include "EnemyEntity.h"
+#include "Character/PlayerEntity.h"
+#include "Character/EnemyEntity.h"
 
 namespace Urho3D
 {

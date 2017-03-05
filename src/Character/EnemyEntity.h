@@ -4,7 +4,8 @@
 #include "Urho3D/Urho2D/StaticSprite2D.h"
 #include "Urho3D/Math/Vector2.h"
 #include "Urho3D/Scene/Node.h"
-#include "ExpirationTimer.h"
+#include "../ExpirationTimer.h"
+#include "../Collisionable.h"
 
 // All Urho3D classes reside in namespace Urho3D
 namespace Urho3D
@@ -23,7 +24,7 @@ const int ELOOK_LEFT = 16;
 const float EMOVE_FORCE = 1.5f;
 const float MAX_TIME = 50;
 
-class EnemyEntity : public LogicComponent
+class EnemyEntity : public LogicComponent, public Collisionable
 {
 	URHO3D_OBJECT(EnemyEntity,LogicComponent);
 public:
@@ -60,6 +61,8 @@ public:
     void CastTarget(Node* target, bool isdebug);
 
     void SetTarget(Node* target);
+    
+    void handleCollision(Node* collisionNode);
 
 private:
 

@@ -1,14 +1,14 @@
-[Mon Feb 20 22:48:15 2017] INFO: Opened log file /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/Data/sAprilsQuest.log
-[Mon Feb 20 22:48:15 2017] INFO: Created 1 worker thread
-[Mon Feb 20 22:48:15 2017] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/Data/
-[Mon Feb 20 22:48:15 2017] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/CoreData/
-[Mon Feb 20 22:48:15 2017] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/native-shared/bin/Autoload/LargeData/
-[Mon Feb 20 22:48:16 2017] INFO: Set screen mode 800x600 windowed
-[Mon Feb 20 22:48:16 2017] INFO: Initialized input
-[Mon Feb 20 22:48:16 2017] INFO: Initialized user interface
-[Mon Feb 20 22:48:16 2017] INFO: Initialized renderer
-[Mon Feb 20 22:48:16 2017] INFO: Set audio mode 44100 Hz stereo interpolated
-[Mon Feb 20 22:48:16 2017] INFO: Initialized engine
+[Sat Mar  4 19:34:50 2017] INFO: Opened log file /Volumes/Carlos/workspace/aprils_quest/cmake-build-debug/bin/Data/sAprilsQuest.log
+[Sat Mar  4 19:34:50 2017] INFO: Created 1 worker thread
+[Sat Mar  4 19:34:50 2017] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/cmake-build-debug/bin/Data/
+[Sat Mar  4 19:34:50 2017] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/cmake-build-debug/bin/CoreData/
+[Sat Mar  4 19:34:50 2017] INFO: Added resource path /Volumes/Carlos/workspace/aprils_quest/cmake-build-debug/bin/Autoload/LargeData/
+[Sat Mar  4 19:34:51 2017] INFO: Set screen mode 800x600 windowed
+[Sat Mar  4 19:34:51 2017] INFO: Initialized input
+[Sat Mar  4 19:34:51 2017] INFO: Initialized user interface
+[Sat Mar  4 19:34:51 2017] INFO: Initialized renderer
+[Sat Mar  4 19:34:51 2017] INFO: Set audio mode 44100 Hz stereo interpolated
+[Sat Mar  4 19:34:51 2017] INFO: Initialized engine
 Used resources:
 Textures/Ramp.png
 Textures/Spot.png
